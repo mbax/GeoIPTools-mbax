@@ -15,18 +15,18 @@
  */
 package uk.org.whoami.geoip.util;
 
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 
 public class Settings {
 
     final String CITYDATABASEPATH = "./plugins/GeoIPTools/GeoLiteCity.dat";
     final String COUNTRYDATABASEPATH = "./plugins/GeoIPTools/GeoIP.dat";
     final String IPV6DATABASEBATH = "./plugins/GeoIPTools/GeoIPv6.dat";
-    private Configuration conf;
+    private Plugin plugin;
 
-    public Settings(Configuration conf) {
-        this.conf = conf;
-        conf.load();
+    public Settings(Plugin plugin) {
+        this.plugin = plugin;
         write();
     }
 
@@ -36,34 +36,37 @@ public class Settings {
         getCountryDatabaseURL();
         getLastUpdated();
         isUpdaterDisabled();
-        conf.save();
+        plugin.saveConfig();
     }
     
     public boolean isUpdaterDisabled() {
         String key = "Update:disabled";
-        if(conf.getString(key) == null) {
-            conf.setProperty(key, false);
+        FileConfiguration conf=plugin.getConfig();
+        if(!conf.isSet(key)) {
+            conf.set(key, false);
         }
         return conf.getBoolean(key, false);
     }
 
     public void setLastUpdated(long lastUpdated) {
         String key = "Update:lastUpdated";
-        conf.setProperty(key, String.valueOf(lastUpdated));
+        plugin.getConfig().set(key, String.valueOf(lastUpdated));
     }
 
     public long getLastUpdated() {
         String key = "Update:lastUpdated";
-        if(conf.getString(key) == null) {
-            conf.setProperty(key, "0");
+        FileConfiguration conf=plugin.getConfig();
+        if(!conf.isSet(key)) {
+            conf.set(key, 0L);
         }
-        return Long.parseLong(conf.getString(key));
+        return conf.getLong(key);
     }
 
     public String getIPv6DatabaseURL() {
         String key = "URL.IPv6Database";
-        if(conf.getString(key) == null) {
-            conf.setProperty(key,
+        FileConfiguration conf=plugin.getConfig();
+        if(!conf.isSet(key)) {
+            conf.set(key,
                     "http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz");
         }
         return conf.getString(key);
@@ -71,8 +74,9 @@ public class Settings {
 
     public String getCityDatabaseURL() {
         String key = "URL.CityDatabase";
-        if(conf.getString(key) == null) {
-            conf.setProperty(key,
+        FileConfiguration conf=plugin.getConfig();
+        if(!conf.isSet(key)) {
+            conf.set(key,
                     "http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz");
         }
         return conf.getString(key);
@@ -80,8 +84,9 @@ public class Settings {
 
     public String getCountryDatabaseURL() {
         String key = "URL.CountryDatabase";
-        if(conf.getString(key) == null) {
-            conf.setProperty(key,
+        FileConfiguration conf=plugin.getConfig();
+        if(!conf.isSet(key)) {
+            conf.set(key,
                     "http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz");
         }
         return conf.getString(key);
@@ -89,7 +94,8 @@ public class Settings {
 
     public String getIPv6DatabasePath() {
         String key = "Path.IPv6Database";
-        if(conf.getString(key) == null) {
+        FileConfiguration conf=plugin.getConfig();
+        if(!conf.isSet(key)) {
             return this.IPV6DATABASEBATH;
         }
         return conf.getString(key);
@@ -97,7 +103,8 @@ public class Settings {
 
     public String getCityDatabasePath() {
         String key = "Path.cityDatabase";
-        if(conf.getString(key) == null) {
+        FileConfiguration conf=plugin.getConfig();
+        if(!conf.isSet(key)) {
             return this.CITYDATABASEPATH;
         }
         return conf.getString(key);
@@ -105,7 +112,8 @@ public class Settings {
 
     public String getCountryDatabasePath() {
         String key = "Path.countryDatabase";
-        if(conf.getString(key) == null) {
+        FileConfiguration conf=plugin.getConfig();
+        if(!conf.isSet(key)) {
             return this.COUNTRYDATABASEPATH;
         }
         return conf.getString(key);

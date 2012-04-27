@@ -37,7 +37,7 @@ public class GeoIPTools extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        settings = new Settings(this.getConfiguration());
+        settings = new Settings(this);
         ConsoleLogger.info("Starting database updates");
         try {
             Updater.update(settings);
